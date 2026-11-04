@@ -9,7 +9,7 @@ import FloodRiskStatus from './components/FloodRiskStatus';
 import AlertsPanel from './components/AlertsPanel';
 import ModelEvaluation from './components/ModelEvaluation';
 import DataSourcesPanel from './components/DataSourcesPanel';
-import { fetchStations, fetchAlerts, fetchDashboardStats } from './api';
+import { fetchStations, fetchAlerts, fetchDashboardStats, fetchMapSummary } from './api';
 
 export default function App() {
   const [activeTab, setActiveTab] = useState('overview');
@@ -17,6 +17,7 @@ export default function App() {
   const [stations, setStations] = useState([]);
   const [alerts, setAlerts] = useState([]);
   const [stats, setStats] = useState(null);
+  const [mapSummary, setMapSummary] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
@@ -24,14 +25,16 @@ export default function App() {
     setLoading(true);
     setError(null);
     try {
-      const [stationsData, alertsData, statsData] = await Promise.allSettled([
+      const [stationsData, alertsData, statsData, mapSummaryData] = await Promise.allSettled([
         fetchStations(),
         fetchAlerts(),
         fetchDashboardStats(),
+        fetchMapSummary(),
       ]);
       if (stationsData.status === 'fulfilled') setStations(stationsData.value);
       if (alertsData.status === 'fulfilled') setAlerts(alertsData.value);
       if (statsData.status === 'fulfilled') setStats(statsData.value);
+      if (mapSummaryData.status === 'fulfilled') setMapSummary(mapSummaryData.value);
     } catch (e) {
       setError('Failed to connect to backend. Is the FastAPI server running on port 8000?');
     } finally {
@@ -102,6 +105,7 @@ export default function App() {
         return (
           <StationMap
             stations={stations}
+            mapSummary={mapSummary}
             onSelectStation={handleSelectStation}
           />
         );

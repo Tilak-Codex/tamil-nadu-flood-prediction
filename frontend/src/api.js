@@ -16,6 +16,12 @@ export async function fetchStations() {
   return res.json();
 }
 
+export async function fetchMapSummary() {
+  const res = await fetch(`${BASE_URL}/map-summary`);
+  if (!res.ok) throw new Error(`HTTP ${res.status}`);
+  return res.json();
+}
+
 export async function fetchStation(id) {
   const res = await fetch(`${BASE_URL}/stations/${id}`);
   if (!res.ok) throw new Error(`HTTP ${res.status}`);

@@ -26,6 +26,7 @@ from src.api.schemas import (
 )
 from src.data.validator import DataValidationError
 from src.services.forecast_service import ForecastService
+from src.services.scheduler import DataRefreshScheduler
 
 # Import modular API routers
 from src.api.routes import stations, observations, predictions, risk, alerts, dashboard, data_sources, health
@@ -67,15 +68,25 @@ elif STATIC_DIR.exists():
     app.mount("/static", StaticFiles(directory=str(STATIC_DIR)), name="static")
 
 service = ForecastService.get_instance()
+scheduler = DataRefreshScheduler()
 
 
 @app.on_event("startup")
 def startup_event():
-    """Initializes tables on startup."""
+    """Initializes tables on startup and launches background live telemetry scheduler."""
     try:
         init_db()
     except Exception as e:
         print(f"[Startup Warning] DB init error: {e}")
+    try:
+        scheduler.start()
+    except Exception as e:
+        print(f"[Startup Warning] Scheduler error: {e}")
+
+
+@app.on_event("shutdown")
+def shutdown_event():
+    scheduler.stop()
 
 
 @app.get("/", response_class=HTMLResponse, tags=["Frontend"])
@@ -94,6 +105,7 @@ def serve_dashboard():
 # ============================================================================
 
 @app.get("/map-summary", response_model=List[ForecastResponse], tags=["Frontend"])
+@app.get("/api/map-summary", response_model=List[ForecastResponse], tags=["Frontend"])
 def get_map_summary():
     """Returns real-time predictions, coordinates, and CWC risk evaluations for all 35 stations."""
     try:
