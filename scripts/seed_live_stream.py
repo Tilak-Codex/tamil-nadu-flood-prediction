@@ -93,12 +93,7 @@ def generate_live_data():
             src.status = "CONNECTED"
             src.last_successful_fetch = now_utc
             src.latest_observation_time = now_utc
-            if "CWC" in src.source_name:
-                src.notes = "Direct Central Water Commission telemetry gateway active."
-            elif "Open-Meteo" in src.source_name:
-                src.notes = "Real-time atmospheric & precipitation telemetry streaming."
-            elif "WRIS" in src.source_name or "IMD" in src.source_name:
-                src.notes = "Hydrological sensor telemetry synchronized via State WRD network."
+            src.notes = "Live Telemetry Relay"
         db.commit()
 
         # 3. Generate 48 hours of continuous, realistic live observations ending NOW
@@ -107,14 +102,13 @@ def generate_live_data():
         # Base water level anchors per station for realistic variety
         # Calibrated so map displays realistic multi-colored risk categories:
         # Extreme (Red): 12, 28
-        # Severe (Orange): 32, 33
-        # Above Normal (Amber): 1, 2, 3, 13, 14, 23, 31
-        # Normal (Green): All remaining 24 stations
+        # Above Normal (Amber): 1, 2, 3, 13, 14, 23, 31, 32, 33
+        # Normal (Green): All remaining stations
         calibrated_stations = {
-            12: 1492.50, # Kudige (Danger 1485.34) -> Extreme (Red)
-            28: 428.20,  # Upper Anicut (Danger 422.60) -> Extreme (Red)
-            32: 20.15,   # Nandambakkam (Warn 19.93, Danger 20.43) -> Severe (Orange)
-            33: 65.80,   # Parthibanur (Warn 59.21, Danger 67.32) -> Severe (Orange)
+            12: 1818.50, # Kudige (HFL 1811.34) -> Extreme (Red)
+            28: 1078.20, # Upper Anicut (HFL 1070.88) -> Extreme (Red)
+            32: 20.15,   # Nandambakkam (Warn 19.93, Danger 20.43) -> Above Normal (Amber)
+            33: 65.80,   # Parthibanur (Warn 59.21, Danger 67.32) -> Above Normal (Amber)
             1: 160.45,   # Bhavani Bridge (Warn 160.22) -> Above Normal (Amber)
             2: 542.00,   # Bhavani Sagar Dam (Warn 529.13) -> Above Normal (Amber)
             3: 561.00,   # Biligundulu (Warn 552.58) -> Above Normal (Amber)
