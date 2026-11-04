@@ -72,6 +72,7 @@ class CSVDataLoader:
             query = db.query(Observation)
             if station_id is not None:
                 query = query.filter(Observation.station_id == station_id)
+            query = query.filter(Observation.water_level.isnot(None))
             query = query.order_by(Observation.station_id, Observation.timestamp)
             records = query.all()
             if not records:

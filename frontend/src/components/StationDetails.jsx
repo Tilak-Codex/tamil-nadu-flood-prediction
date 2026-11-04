@@ -1,11 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import {
   Building2,
-  Waves,
   MapPin,
-  Calendar,
-  AlertTriangle,
-  TrendingUp,
   BrainCircuit,
   ShieldCheck,
   RefreshCw
@@ -18,45 +14,53 @@ export default function StationDetails({
   onSelectStation,
   onNavigateTab,
 }) {
-  const [stationId, setStationId] = useState(selectedStationId || 0);
-  const [forecast, setForecast] = useState(null);
-  const [loading, setLoading] = useState(false);
+  const [localStationId, setLocalStationId] = useState(stations[0]?.station_id ?? 0);
+  const stationId = selectedStationId ?? localStationId;
+  const [forecastState, setForecastState] = useState(null);
+  const [actionError, setActionError] = useState(null);
   const [running, setRunning] = useState(false);
 
   useEffect(() => {
-    if (selectedStationId !== undefined) {
-      setStationId(selectedStationId);
-    }
-  }, [selectedStationId]);
+    let cancelled = false;
 
-  useEffect(() => {
-    loadForecast(stationId);
+    fetchForecast(stationId)
+      .then((data) => {
+        if (!cancelled) setForecastState({ stationId, forecast: data, error: null });
+      })
+      .catch((err) => {
+        console.error('Failed to load forecast:', err);
+        if (!cancelled) {
+          setForecastState({
+            stationId,
+            forecast: null,
+            error: 'Unable to load station forecast. Please retry.',
+          });
+        }
+      });
+
+    return () => {
+      cancelled = true;
+    };
   }, [stationId]);
-
-  const loadForecast = async (id) => {
-    setLoading(true);
-    try {
-      const data = await fetchForecast(id);
-      setForecast(data);
-    } catch (err) {
-      console.error('Failed to load forecast:', err);
-    } finally {
-      setLoading(false);
-    }
-  };
 
   const handleRunInference = async () => {
     setRunning(true);
+    setActionError(null);
     try {
       const data = await runPrediction(stationId);
-      setForecast(data);
+      setForecastState({ stationId, forecast: data, error: null });
     } catch (err) {
       console.error('Inference trigger failed:', err);
+      setActionError('Unable to compute a station forecast. Please retry.');
     } finally {
       setRunning(false);
     }
   };
 
+  const currentForecastState = forecastState?.stationId === stationId ? forecastState : null;
+  const forecast = currentForecastState?.forecast;
+  const forecastError = currentForecastState?.error || actionError;
+  const loading = !currentForecastState;
   const stn = stations.find((s) => s.station_id === stationId) || stations[0] || {};
 
   const getSeverityBadge = (sev) => {
@@ -86,7 +90,7 @@ export default function StationDetails({
               value={stationId}
               onChange={(e) => {
                 const id = parseInt(e.target.value, 10);
-                setStationId(id);
+                setLocalStationId(id);
                 onSelectStation(id);
               }}
               className="bg-slate-950 border border-slate-700 rounded-lg px-3 py-1.5 text-xs text-white focus:outline-none focus:border-blue-500 font-medium"
@@ -102,7 +106,7 @@ export default function StationDetails({
 
         <div className="flex items-center gap-2">
           <button
-            onClick={() => onNavigateTab('charts')}
+            onClick={() => onNavigateTab('hydrograph')}
             className="px-3 py-1.5 text-xs bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 rounded-lg font-medium transition"
           >
             View Hydrograph
@@ -181,17 +185,23 @@ export default function StationDetails({
             <div className="bg-slate-950/70 border border-slate-800 p-3.5 rounded-lg space-y-1">
               <span className="text-slate-400 text-[11px]">Latest Observed Level</span>
               <div className="text-2xl font-bold text-white">
-                {forecast ? `${forecast.latest_observed_level_m.toFixed(2)} m` : 'Loading...'}
+                {forecast
+                  ? `${forecast.latest_observed_level_m.toFixed(2)} m`
+                  : loading ? 'Loading...' : 'Unavailable'}
               </div>
               <div className="text-[10px] text-slate-400">
-                {forecast?.observation_timestamp ? new Date(forecast.observation_timestamp).toLocaleString() : 'Recent timestamp'}
+                {forecast?.observation_timestamp
+                  ? new Date(forecast.observation_timestamp).toLocaleString()
+                  : loading ? 'Loading recent timestamp...' : 'Timestamp unavailable'}
               </div>
             </div>
 
             <div className="bg-slate-950/70 border border-slate-800 p-3.5 rounded-lg space-y-1">
               <span className="text-slate-400 text-[11px]">Next-Hour Forecast (+1h)</span>
               <div className="text-2xl font-bold text-blue-400">
-                {forecast ? `${forecast.predicted_water_level_m.toFixed(2)} m` : 'Loading...'}
+                {forecast
+                  ? `${forecast.predicted_water_level_m.toFixed(2)} m`
+                  : loading ? 'Loading...' : 'Unavailable'}
               </div>
               <div className="text-[10px] text-blue-300/80">
                 LSTM Embedding Model
@@ -203,7 +213,9 @@ export default function StationDetails({
             <div className="flex justify-between items-center">
               <span className="text-slate-400">Rate of Water Rise:</span>
               <span className={`font-semibold ${forecast?.rate_of_change_m_per_h > 0 ? 'text-amber-400' : 'text-slate-300'}`}>
-                {forecast ? `${forecast.rate_of_change_m_per_h >= 0 ? '+' : ''}${forecast.rate_of_change_m_per_h.toFixed(3)} m/h` : '0.000 m/h'}
+                {forecast
+                  ? `${forecast.rate_of_change_m_per_h >= 0 ? '+' : ''}${forecast.rate_of_change_m_per_h.toFixed(3)} m/h`
+                  : loading ? 'Loading...' : 'Unavailable'}
               </span>
             </div>
             <div className="flex justify-between items-center">
@@ -224,6 +236,7 @@ export default function StationDetails({
               </span>
             </div>
             <p className="text-xs text-slate-300">{forecast?.severity_reason || forecast?.risk_reason}</p>
+            {forecastError && <p role="alert" className="mt-2 text-xs text-red-300">{forecastError}</p>}
           </div>
         </div>
 

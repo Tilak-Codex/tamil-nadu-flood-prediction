@@ -35,7 +35,7 @@ export default function App() {
       if (alertsData.status === 'fulfilled') setAlerts(alertsData.value);
       if (statsData.status === 'fulfilled') setStats(statsData.value);
       if (mapSummaryData.status === 'fulfilled') setMapSummary(mapSummaryData.value);
-    } catch (e) {
+    } catch {
       setError('Failed to connect to backend. Is the FastAPI server running on port 8000?');
     } finally {
       setLoading(false);
@@ -112,9 +112,10 @@ export default function App() {
       case 'station-details':
         return (
           <StationDetails
-            stationId={selectedStationId}
+            selectedStationId={selectedStationId}
             stations={stations}
             onSelectStation={handleSelectStation}
+            onNavigateTab={handleNavigateTab}
           />
         );
       case 'hydrograph':
