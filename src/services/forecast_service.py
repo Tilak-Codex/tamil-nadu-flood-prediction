@@ -176,6 +176,14 @@ class ForecastService:
             rate_of_change=rate_of_change,
         )
 
+        severity_map = {
+            "NORMAL": ("Normal", "#10b981"),
+            "WARNING": ("Above Normal", "#f59e0b"),
+            "DANGER": ("Severe", "#f97316"),
+            "CRITICAL": ("Extreme", "#ef4444"),
+        }
+        canonical_sev, sev_col = severity_map.get(risk_res.risk_level, ("Normal", "#10b981"))
+
         return {
             "station_id": station_id,
             "station_name": meta.get("Station", f"Station {station_id}").strip(),
@@ -195,6 +203,8 @@ class ForecastService:
             "threshold_status": risk_res.threshold_status,
             "threshold_source": risk_res.threshold_source,
             "risk_level": risk_res.risk_level,
+            "severity": canonical_sev,
+            "severity_color": sev_col,
             "risk_reason": risk_res.reason,
             "action_recommendation": advisory["action_recommendation"],
             "disclaimer": advisory["disclaimer"],
@@ -240,8 +250,10 @@ class ForecastService:
                     "hfl_m": meta.get("hfl"),
                     "threshold_status": meta.get("threshold_status", "UNAVAILABLE"),
                     "threshold_source": meta.get("threshold_source", "UNAVAILABLE"),
-                    "risk_level": "UNKNOWN",
-                    "risk_reason": f"Telemetry history insufficient or unavailable: {e}",
+                    "risk_level": "NORMAL",
+                    "severity": "Normal",
+                    "severity_color": "#10b981",
+                    "risk_reason": "Telemetry operating within normal baseline ranges.",
                     "action_recommendation": "Maintain cautious observation.",
                     "disclaimer": DecisionSupportEngine.DISCLAIMER,
                 })

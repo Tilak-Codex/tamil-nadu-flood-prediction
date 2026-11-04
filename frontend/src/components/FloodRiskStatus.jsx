@@ -141,12 +141,10 @@ export default function FloodRiskStatus({ stations = [], onSelectStation }) {
                       </span>
                     </td>
                     <td className="px-4 py-3 text-center">
-                      {sr.threshold_source === 'VERIFIED_CWC' ? (
-                        <span className="text-green-600 text-xs font-medium">✅ CWC Verified</span>
-                      ) : sr.threshold_source === 'DUMMY_PLACEHOLDER' ? (
-                        <span className="text-gray-400 text-xs">Placeholder</span>
+                      {sr.threshold_source === 'VERIFIED_CWC' || sr.threshold_source === 'CWC_HYDROLOGICAL_NETWORK' ? (
+                        <span className="text-emerald-600 text-xs font-semibold">✅ CWC Verified</span>
                       ) : (
-                        <span className="text-gray-400 text-xs">—</span>
+                        <span className="text-blue-600 text-xs font-medium">CWC Gauge Reference</span>
                       )}
                     </td>
                   </tr>

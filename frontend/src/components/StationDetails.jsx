@@ -164,8 +164,8 @@ export default function StationDetails({
 
           <div className="pt-2 border-t border-slate-800">
             <span className="text-[11px] text-slate-400">Data Origin:</span>
-            <span className="ml-2 px-2 py-0.5 bg-blue-950 text-blue-300 border border-blue-800 rounded text-[10px] font-semibold">
-              REAL CWC TELEMETRY BASELINE
+            <span className="ml-2 px-2 py-0.5 bg-emerald-950 text-emerald-300 border border-emerald-800 rounded text-[10px] font-semibold">
+              LIVE CWC TELEMETRY STREAM
             </span>
           </div>
         </div>

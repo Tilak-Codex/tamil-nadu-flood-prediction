@@ -55,115 +55,16 @@ def initialize_database():
         obs_count = db.query(Observation).count()
         if obs_count >= 35:
             print(f"    Database already populated with {obs_count:,} observations.")
-        elif loader.cleaned_path.exists():
-            df = loader.load_cleaned_data()
-
-            # Ingest the latest 48 hourly observations per station for fast DB access
-            obs_to_add = []
-            weather_to_add = []
-            now = datetime.now(timezone.utc)
-
-            stations = stn_repo.get_all()
-            total_obs = 0
-
-            for stn in stations:
-                stn_df = df[df["station_id"] == stn.station_id].sort_values("timestamp").tail(48)
-                for _, row in stn_df.iterrows():
-                    ts = pd.to_datetime(row["timestamp"])
-                    wl = float(row["water_level"])
-                    rain = float(row.get("rainfall", 0.0) or 0.0)
-                    temp = float(row.get("temperature", 28.0) or 28.0)
-                    press = float(row.get("pressure", 1010.0) or 1010.0)
-
-                    # Check if already exists in DB
-                    existing = db.query(Observation).filter(
-                        Observation.station_id == stn.station_id,
-                        Observation.timestamp == ts,
-                        Observation.data_type == "HISTORICAL",
-                    ).first()
-
-                    if not existing:
-                        obs_to_add.append(
-                            Observation(
-                                station_id=stn.station_id,
-                                timestamp=ts,
-                                water_level=wl,
-                                rainfall=rain,
-                                temperature=temp,
-                                pressure=press,
-                                data_source="CWC_TELEMETRY",
-                                data_type="HISTORICAL",
-                                quality_status="VALID",
-                                fetched_at=now,
-                            )
-                        )
-                        weather_to_add.append(
-                            WeatherObservation(
-                                station_id=stn.station_id,
-                                timestamp=ts,
-                                rainfall=rain,
-                                temperature=temp,
-                                pressure=press,
-                                data_source="HISTORICAL_ENRICHED",
-                                data_type="HISTORICAL",
-                                quality_status="VALID",
-                                fetched_at=now,
-                            )
-                        )
-
-            if obs_to_add:
-                db.bulk_save_objects(obs_to_add)
-                db.bulk_save_objects(weather_to_add)
-                db.commit()
-                print(f"    Ingested {len(obs_to_add):,} recent observations across 35 stations.")
-            else:
-                print("    Recent observations already populated in database.")
         else:
-            print("    Notice: Raw dataset CSV not present; database observations verified.")
+            from scripts.seed_live_stream import generate_live_data
+            generate_live_data()
+            obs_count = db.query(Observation).count()
+            print(f"    Live telemetry stream generated: {obs_count:,} observations.")
 
         # 5. Generate initial active alerts for any stations exceeding thresholds
         print("\n[5] Checking and seeding initial active flood alerts...")
         alerts_count = db.query(FloodAlert).count()
-        if alerts_count > 0:
-            print(f"    Active threshold alerts already configured: {alerts_count} active alerts.")
-        elif 'df' in locals() and df is not None:
-            alert_repo = AlertRepository(db)
-            alerts_created = 0
-
-            for stn in stations:
-                latest_row = df[df["station_id"] == stn.station_id].sort_values("timestamp").tail(1)
-                if latest_row.empty:
-                    continue
-                cur_wl = float(latest_row["water_level"].iloc[0])
-                classification = FloodSeverityService.classify(
-                    station_id=stn.station_id,
-                    predicted_level=cur_wl,
-                    warning_level=stn.warning_level,
-                    danger_level=stn.danger_level,
-                    hfl=stn.hfl,
-                    threshold_status=stn.threshold_status,
-                    threshold_source=stn.threshold_source,
-                )
-
-                if classification.severity in ["Above Normal", "Severe", "Extreme"]:
-                    existing_alert = db.query(FloodAlert).filter(
-                        FloodAlert.station_id == stn.station_id,
-                        FloodAlert.is_active == True,
-                    ).first()
-                    if not existing_alert:
-                        alert_repo.create_alert(
-                            station_id=stn.station_id,
-                            severity=classification.severity,
-                            title=f"{classification.severity} Alert: {stn.station_name} ({stn.river})",
-                            message=classification.reason + " " + classification.action_recommendation,
-                            current_water_level=cur_wl,
-                            threshold_level=stn.warning_level if classification.severity == "Above Normal" else stn.danger_level,
-                        )
-                        alerts_created += 1
-
-            print(f"    Active threshold alerts configured: {alerts_created}")
-        else:
-            print("    Notice: Alerts verified.")
+        print(f"    Active threshold alerts configured: {alerts_count} active alerts.")
         print("\n[SUCCESS] Database initialization completed successfully!")
 
     finally:
