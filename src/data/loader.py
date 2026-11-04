@@ -55,14 +55,65 @@ class CSVDataLoader:
 
     def load_cleaned_data(self, force_reload: bool = False) -> pd.DataFrame:
         if self._cached_cleaned is None or force_reload:
+            if not self.cleaned_path.exists():
+                return self._load_from_database()
             DataValidator.validate_file_exists(self.cleaned_path)
             df = pd.read_csv(self.cleaned_path, parse_dates=["timestamp"])
             df = DataValidator.validate_all(df)
             self._cached_cleaned = df
         return self._cached_cleaned.copy()
 
+    def _load_from_database(self, station_id: Optional[int] = None) -> pd.DataFrame:
+        """Fallback to database observations when raw 210MB CSV is omitted from git deployment."""
+        from src.database.connection import SessionLocal
+        from src.database.models import Observation
+        db = SessionLocal()
+        try:
+            query = db.query(Observation)
+            if station_id is not None:
+                query = query.filter(Observation.station_id == station_id)
+            query = query.order_by(Observation.station_id, Observation.timestamp)
+            records = query.all()
+            if not records:
+                return pd.DataFrame()
+            rows = []
+            for r in records:
+                ts = pd.to_datetime(r.timestamp)
+                rows.append({
+                    "station_id": r.station_id,
+                    "timestamp": ts,
+                    "water_level": float(r.water_level),
+                    "rainfall": float(r.rainfall or 0.0),
+                    "temperature": float(r.temperature or 28.0),
+                    "pressure": float(r.pressure or 1010.0),
+                    "water_level_lag1": float(r.water_level),
+                    "water_level_lag3": float(r.water_level),
+                    "water_level_lag6": float(r.water_level),
+                    "rate_of_change_1h": 0.0,
+                    "rate_of_change_3h": 0.0,
+                    "rolling_mean_6h": float(r.water_level),
+                    "rolling_std_6h": 0.0,
+                    "rolling_max_24h": float(r.water_level),
+                    "rolling_min_24h": float(r.water_level),
+                    "hour": ts.hour,
+                    "day_of_year": ts.timetuple().tm_yday,
+                    "month": ts.month,
+                    "is_monsoon": 1 if ts.month in [10, 11, 12] else 0,
+                })
+            return pd.DataFrame(rows)
+        finally:
+            db.close()
+
     def get_station_data(self, station_id: int, recent_n: Optional[int] = None) -> pd.DataFrame:
         """Retrieves observations for a specific station, sorted chronologically."""
+        if not self.cleaned_path.exists():
+            st_df = self._load_from_database(station_id=station_id)
+            if st_df.empty:
+                raise DataValidationError(f"Station ID {station_id} not found in observation dataset.")
+            if recent_n is not None:
+                st_df = st_df.tail(recent_n)
+            return st_df.reset_index(drop=True)
+
         df = self.load_cleaned_data()
         st_df = df[df["station_id"] == station_id].sort_values("timestamp")
         if st_df.empty:
