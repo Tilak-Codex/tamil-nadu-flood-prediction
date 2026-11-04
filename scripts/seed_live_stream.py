@@ -105,15 +105,23 @@ def generate_live_data():
         print(f"Synthesizing 48h active river hydrographs up to current time: {now_utc.strftime('%Y-%m-%d %H:%M:%S UTC')}...")
 
         # Base water level anchors per station for realistic variety
-        # Elevation profiles tuned so a few key gauges show active flood warning / above-normal states
-        elevated_stations = {
-            1: 160.40,   # Bhavani Bridge (Warning is 160.22) -> Above Warning
-            3: 554.80,   # Biligundulu (Warning 552.58) -> Above Warning
-            14: 555.10,  # Mettur Reservoir (Warning 554.22) -> Above Warning
-            23: 143.50,  # Sri Rangam (Warning 142.87) -> Above Warning
-            28: 144.20,  # Upper Anicut (Warning 143.87) -> Above Warning
-            13: 436.20,  # Kudlur (Warning 435.12) -> Above Warning
-            12: 1261.50, # Kudige (Warning 1260.33) -> Above Warning
+        # Calibrated so map displays realistic multi-colored risk categories:
+        # Extreme (Red): 12, 28
+        # Severe (Orange): 32, 33
+        # Above Normal (Amber): 1, 2, 3, 13, 14, 23, 31
+        # Normal (Green): All remaining 24 stations
+        calibrated_stations = {
+            12: 1492.50, # Kudige (Danger 1485.34) -> Extreme (Red)
+            28: 428.20,  # Upper Anicut (Danger 422.60) -> Extreme (Red)
+            32: 20.15,   # Nandambakkam (Warn 19.93, Danger 20.43) -> Severe (Orange)
+            33: 65.80,   # Parthibanur (Warn 59.21, Danger 67.32) -> Severe (Orange)
+            1: 160.45,   # Bhavani Bridge (Warn 160.22) -> Above Normal (Amber)
+            2: 542.00,   # Bhavani Sagar Dam (Warn 529.13) -> Above Normal (Amber)
+            3: 561.00,   # Biligundulu (Warn 552.58) -> Above Normal (Amber)
+            13: 438.50,  # Kudlur (Warn 435.12) -> Above Normal (Amber)
+            14: 558.20,  # Mettur Reservoir (Warn 554.22) -> Above Normal (Amber)
+            23: 145.40,  # Sri Rangam (Warn 142.87) -> Above Normal (Amber)
+            31: 29.10,   # Kamuthi Bridge (Warn 28.50) -> Above Normal (Amber)
         }
 
         obs_batch = []
@@ -122,7 +130,7 @@ def generate_live_data():
         timestamps = [now_utc - timedelta(hours=47 - i) for i in range(48)]
 
         for stn in stations:
-            wl_base = elevated_stations.get(stn.station_id)
+            wl_base = calibrated_stations.get(stn.station_id)
             if wl_base is None:
                 if stn.warning_level:
                     # Normal operating range: 75% to 88% of warning level
@@ -141,7 +149,7 @@ def generate_live_data():
                 cur_wl = round(wl_base + noise, 3)
 
                 # Weather parameters matching monsoon river dynamics
-                if stn.station_id in elevated_stations:
+                if stn.station_id in calibrated_stations:
                     rain = round(max(0.0, math.sin(phase) * 8.5 + random.uniform(2.0, 14.0)), 2)
                 else:
                     rain = round(max(0.0, random.uniform(-2.0, 4.5)), 2)
