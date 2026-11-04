@@ -1,0 +1,36 @@
+Station,River,Basin,Latitude,Longitude,RL_of_zeroGauge,MeanSeaLevel,Is_DischargeDataAvailable,station_id
+AKKIHEBBAL,Cauvery,Cauvery,12.59861111,76.40055556,745.0,745.0,Yes,0
+BHAVANI BRIDGE,Cauvery,Cauvery,11.43833333,77.68083333,0.0,0.0,Yes,1
+Bhavani Sagar Dam ,Cauvery,Cauvery,11.47,77.1,0.0,840.0,No,2
+BILIGUNDULU,Cauvery,Cauvery,12.18222222,77.72388889,255.0,0.0,Yes,3
+Harangi Reservoir,Cauvery,Cauvery,12.4938,75.90541389,0.0,838.0,No,4
+Hemavathy Reservoir,Cauvery,Cauvery,12.82196111,76.05423333,0.0,868.0,Yes,5
+Kabini Reservoir,Cauvery,Cauvery,11.97339167,76.35275,0.0,664.0,No,6
+K.M. VADI,Cauvery,Cauvery,12.34722222,76.29222222,765.0,765.0,Yes,7
+KODAGANAR DAM,Cauvery,Cauvery,10.59305556,77.97194444,192.0,0.0,Yes,8
+KODUMUDI,Cauvery,Cauvery,11.08,77.89,121.57,130.0,Yes,9
+KOLLEGAL,Cauvery,Cauvery,12.18944444,77.10194444,622.0,622.0,Yes,10
+Krishnarajasagar Reservoir,Cauvery,Cauvery,12.42559444,76.5725,714.451,200.0,No,11
+KUDIGE,Cauvery,Cauvery,12.5025,75.96083333,806.0,806.0,Yes,12
+KUDLUR,Cauvery,Cauvery,11.84055556,77.46277778,433.0,102.0,Yes,13
+Mettur Reservoir,Cauvery,Cauvery,11.8,77.8,204.222,200.0,Yes,14
+M.H. HALLI,Cauvery,Cauvery,12.82,76.14111111,838.0,838.0,Yes,15
+MUSIRI,Cauvery,Cauvery,10.93805556,78.44027778,78.0,92.0,Yes,16
+MUTHANKERA,Cauvery,Cauvery,11.80805556,76.08416667,705.0,705.0,Yes,17
+NALLAMARANPATTY,Cauvery,Cauvery,10.88083333,77.98472222,126.0,138.0,Yes,18
+NELLITHURAI,Cauvery,Cauvery,11.28777778,76.89111111,301.0,312.0,Yes,19
+PALLIPALAYAM/Erode,Cauvery,Cauvery,11.36055556,77.74611111,0.0,0.0,No,20
+SAKLESHPUR,Cauvery,Cauvery,12.94333333,75.79388889,885.0,885.0,Yes,21
+SANARPATTI,Cauvery,Cauvery,10.28555556,78.09611111,0.0,0.0,Yes,22
+SRI RANGAM,Cauvery,Cauvery,10.84722222,78.68888889,0.0,0.0,No,23
+T. BEKKUPE,Cauvery,Cauvery,12.50722222,77.42805556,600.0,600.0,Yes,24
+THENGUMARAHADA,Cauvery,Cauvery,11.57277778,76.91916667,336.65,345.0,Yes,25
+THIMMANAHALLI,Cauvery,Cauvery,12.98527778,76.03777778,902.425,902.43,Yes,26
+T.K.HALLI,Cauvery,Cauvery,12.41194444,77.19277778,580.0,580.0,Yes,27
+UPPER ANICUT,Cauvery,Cauvery,10.88861111,78.58,72.6,0.0,Yes,28
+URACHIKOTTAI,Cauvery,Cauvery,11.47777778,77.7,154.0,168.0,Yes,29
+VADAMADURAI,Cauvery,Cauvery,10.46138889,78.05333333,0.0,0.0,No,30
+Kamuthi Bridge,Gundar,East flowing rivers between Pennar and Kanyakumari,9.41722222,78.36833333,0.0,0.0,No,31
+Nandambakkam CheckDam,Adyar,East flowing rivers between Pennar and Kanyakumari,13.01611111,80.18277778,0.0,0.0,No,32
+Parthibanur Regulator,Gundar,East flowing rivers between Pennar and Kanyakumari,9.63472222,78.47166667,0.0,58.2,No,33
+Virudhachalam Anicut,--,East flowing rivers between Pennar and Kanyakumari,11.47805556,79.38138889,0.0,0.0,No,34

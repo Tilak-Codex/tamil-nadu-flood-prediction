@@ -1,0 +1,612 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Tamil Nadu Flood Prediction & Decision Support System</title>
+  
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Leaflet CSS & JS -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+  <!-- Chart.js -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+    body {
+      font-family: 'Inter', sans-serif;
+      background-color: #0f172a;
+      color: #f8fafc;
+    }
+    #map {
+      height: 600px;
+      width: 100%;
+      border-radius: 1rem;
+      z-index: 10;
+    }
+    .leaflet-popup-content-wrapper {
+      background: #1e293b;
+      color: #f8fafc;
+      border-radius: 0.75rem;
+      box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.5);
+      border: 1px solid #334155;
+    }
+    .leaflet-popup-tip {
+      background: #1e293b;
+    }
+    /* Pulse animations for alert markers */
+    @keyframes pulse-ring {
+      0% { transform: scale(0.95); opacity: 0.8; }
+      50% { transform: scale(1.3); opacity: 0.3; }
+      100% { transform: scale(0.95); opacity: 0.8; }
+    }
+    .pulse-warning {
+      animation: pulse-ring 2s infinite ease-in-out;
+    }
+    .pulse-danger {
+      animation: pulse-ring 1.2s infinite ease-in-out;
+    }
+    .pulse-critical {
+      animation: pulse-ring 0.8s infinite ease-in-out;
+    }
+    /* Custom scrollbar */
+    ::-webkit-scrollbar {
+      width: 8px;
+      height: 8px;
+    }
+    ::-webkit-scrollbar-track {
+      background: #0f172a;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: #334155;
+      border-radius: 4px;
+    }
+  </style>
+</head>
+<body class="min-h-screen flex flex-col">
+
+  <!-- Header & Navigation -->
+  <header class="border-b border-slate-800 bg-slate-900/90 backdrop-blur sticky top-0 z-50 px-6 py-4">
+    <div class="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between gap-4">
+      <div class="flex items-center gap-3">
+        <div class="w-10 h-10 rounded-xl bg-blue-600 flex items-center justify-center text-xl shadow-lg shadow-blue-500/30">
+          🌊
+        </div>
+        <div>
+          <h1 class="text-xl font-bold tracking-tight text-white flex items-center gap-2">
+            Tamil Nadu River Flood Prediction & Decision Support System
+            <span class="text-xs px-2 py-0.5 rounded-full bg-blue-500/20 text-blue-400 border border-blue-500/30">AI + CWC</span>
+          </h1>
+          <p class="text-xs text-slate-400">Deep-Learning River Stage Forecasting (LSTM + Embedding) across Cauvery, Gundar & Adyar Basins</p>
+        </div>
+      </div>
+
+      <!-- Quick Action Buttons -->
+      <div class="flex items-center gap-3">
+        <button onclick="refreshData()" class="px-3.5 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-xs font-medium text-slate-200 border border-slate-700 flex items-center gap-1.5 transition">
+          <svg id="refresh-icon" class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path></svg>
+          Refresh Live Data
+        </button>
+        <a href="/docs" target="_blank" class="px-3.5 py-1.5 rounded-lg bg-blue-600 hover:bg-blue-500 text-xs font-medium text-white shadow-md shadow-blue-600/30 transition">
+          REST API Docs
+        </a>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Content Layout -->
+  <main class="flex-1 max-w-7xl w-full mx-auto p-4 sm:p-6 space-y-6">
+
+    <!-- KPI Summary Cards -->
+    <section class="grid grid-cols-2 sm:grid-cols-4 gap-4">
+      <div class="bg-slate-800/80 border border-slate-700/60 rounded-xl p-4 shadow-sm">
+        <p class="text-xs font-semibold text-slate-400 uppercase tracking-wider">Total Gauges</p>
+        <div class="mt-2 flex items-baseline justify-between">
+          <span id="kpi-total" class="text-2xl font-bold text-white">35</span>
+          <span class="text-xs font-medium text-blue-400">All Basins</span>
+        </div>
+      </div>
+
+      <div class="bg-slate-800/80 border border-emerald-900/40 rounded-xl p-4 shadow-sm">
+        <div class="flex items-center justify-between">
+          <p class="text-xs font-semibold text-emerald-400 uppercase tracking-wider">Normal Flow</p>
+          <span class="w-2.5 h-2.5 rounded-full bg-emerald-500"></span>
+        </div>
+        <div class="mt-2 flex items-baseline justify-between">
+          <span id="kpi-normal" class="text-2xl font-bold text-emerald-400">--</span>
+          <span class="text-xs text-slate-400">&lt; Warning Level</span>
+        </div>
+      </div>
+
+      <div class="bg-slate-800/80 border border-amber-900/40 rounded-xl p-4 shadow-sm">
+        <div class="flex items-center justify-between">
+          <p class="text-xs font-semibold text-amber-400 uppercase tracking-wider">Warning Stage</p>
+          <span class="w-2.5 h-2.5 rounded-full bg-amber-500"></span>
+        </div>
+        <div class="mt-2 flex items-baseline justify-between">
+          <span id="kpi-warning" class="text-2xl font-bold text-amber-400">--</span>
+          <span class="text-xs text-slate-400">&ge; WL &amp; &lt; DL</span>
+        </div>
+      </div>
+
+      <div class="bg-slate-800/80 border border-red-900/40 rounded-xl p-4 shadow-sm">
+        <div class="flex items-center justify-between">
+          <p class="text-xs font-semibold text-red-400 uppercase tracking-wider">Danger / Critical</p>
+          <span class="w-2.5 h-2.5 rounded-full bg-red-500"></span>
+        </div>
+        <div class="mt-2 flex items-baseline justify-between">
+          <span id="kpi-danger" class="text-2xl font-bold text-red-400">--</span>
+          <span class="text-xs text-slate-400">&ge; Danger Level</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- Map and Station Details Panel -->
+    <section class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+      
+      <!-- Interactive Tamil Nadu Map Container (2 Columns on Large Screens) -->
+      <div class="lg:col-span-2 bg-slate-800/60 border border-slate-700 rounded-2xl p-4 flex flex-col space-y-3">
+        <div class="flex flex-wrap items-center justify-between gap-3">
+          <div class="flex items-center gap-2">
+            <h2 class="text-base font-semibold text-white">Tamil Nadu River Monitoring Map</h2>
+            <span class="text-xs text-slate-400">Latitude &amp; Longitude GPS Coordinates</span>
+          </div>
+
+          <!-- Risk Filters -->
+          <div class="flex items-center gap-1.5 bg-slate-900 p-1 rounded-lg border border-slate-800 text-xs">
+            <button onclick="filterMap('ALL')" id="btn-filter-ALL" class="px-2.5 py-1 rounded font-medium bg-blue-600 text-white transition">All</button>
+            <button onclick="filterMap('NORMAL')" id="btn-filter-NORMAL" class="px-2.5 py-1 rounded font-medium text-slate-400 hover:text-white transition">Normal</button>
+            <button onclick="filterMap('WARNING')" id="btn-filter-WARNING" class="px-2.5 py-1 rounded font-medium text-slate-400 hover:text-white transition">Warning</button>
+            <button onclick="filterMap('DANGER')" id="btn-filter-DANGER" class="px-2.5 py-1 rounded font-medium text-slate-400 hover:text-white transition">Danger</button>
+            <button onclick="filterMap('CRITICAL')" id="btn-filter-CRITICAL" class="px-2.5 py-1 rounded font-medium text-slate-400 hover:text-white transition">Critical</button>
+          </div>
+        </div>
+
+        <!-- The Leaflet Map Canvas -->
+        <div id="map" class="shadow-inner"></div>
+
+        <!-- Map Legend -->
+        <div class="pt-2 flex flex-wrap items-center justify-between text-xs text-slate-400 border-t border-slate-700/60">
+          <div class="flex flex-wrap items-center gap-4">
+            <span class="flex items-center gap-1.5"><span class="w-3 h-3 rounded-full bg-emerald-500 inline-block"></span> Normal (&lt; WL)</span>
+            <span class="flex items-center gap-1.5"><span class="w-3 h-3 rounded-full bg-amber-500 inline-block"></span> Warning (WL &ndash; DL)</span>
+            <span class="flex items-center gap-1.5"><span class="w-3 h-3 rounded-full bg-orange-500 inline-block"></span> Danger (DL &ndash; HFL)</span>
+            <span class="flex items-center gap-1.5"><span class="w-3 h-3 rounded-full bg-red-600 inline-block"></span> Critical (&ge; HFL)</span>
+            <span class="flex items-center gap-1.5"><span class="w-3 h-3 rounded-full bg-gray-500 inline-block"></span> Unverified</span>
+          </div>
+          <span class="text-slate-500">Center: 11.1271° N, 78.6569° E</span>
+        </div>
+      </div>
+
+      <!-- Right Panel: Active Station Inspection & Decision Support Drawer -->
+      <div class="bg-slate-800/60 border border-slate-700 rounded-2xl p-5 flex flex-col space-y-4">
+        <div class="border-b border-slate-700 pb-3 flex items-start justify-between">
+          <div>
+            <span id="drawer-basin" class="text-xs uppercase font-semibold tracking-wider text-blue-400">Cauvery Basin</span>
+            <h3 id="drawer-title" class="text-lg font-bold text-white mt-0.5">Select a Station on Map</h3>
+            <p id="drawer-coords" class="text-xs text-slate-400 mt-0.5">Click any marker or table row to inspect telemetry</p>
+          </div>
+          <span id="drawer-badge" class="px-2.5 py-1 rounded-full text-xs font-bold bg-slate-700 text-slate-300">STANDBY</span>
+        </div>
+
+        <!-- Levels & Forecast Metric Cards -->
+        <div class="grid grid-cols-2 gap-3">
+          <div class="bg-slate-900/80 p-3 rounded-xl border border-slate-800">
+            <p class="text-[11px] text-slate-400 font-medium">Latest Observed</p>
+            <p id="drawer-observed" class="text-xl font-bold text-white mt-1">-- <span class="text-xs font-normal text-slate-400">m</span></p>
+            <p id="drawer-obs-ts" class="text-[10px] text-slate-500 mt-1">Telemetry time</p>
+          </div>
+
+          <div class="bg-slate-900/80 p-3 rounded-xl border border-blue-900/40">
+            <p class="text-[11px] text-blue-400 font-medium">LSTM Forecast (+1h)</p>
+            <p id="drawer-forecast" class="text-xl font-bold text-blue-400 mt-1">-- <span class="text-xs font-normal text-slate-400">m</span></p>
+            <p id="drawer-roc" class="text-[10px] text-slate-500 mt-1">Rate of change: --</p>
+          </div>
+        </div>
+
+        <!-- CWC Threshold Reference Progress Bars -->
+        <div class="bg-slate-900/60 p-3.5 rounded-xl border border-slate-800 space-y-2">
+          <div class="flex items-center justify-between text-xs">
+            <span class="font-semibold text-slate-300">CWC Thresholds Comparison</span>
+            <span id="drawer-thresh-status" class="text-[10px] px-1.5 py-0.5 rounded bg-slate-800 text-slate-400 border border-slate-700">DUMMY_PLACEHOLDER</span>
+          </div>
+
+          <div class="space-y-1.5 pt-1 text-xs">
+            <div class="flex justify-between text-slate-400">
+              <span>Warning Level (WL):</span>
+              <span id="drawer-wl" class="font-medium text-amber-400">-- m</span>
+            </div>
+            <div class="flex justify-between text-slate-400">
+              <span>Danger Level (DL):</span>
+              <span id="drawer-dl" class="font-medium text-orange-400">-- m</span>
+            </div>
+            <div class="flex justify-between text-slate-400">
+              <span>Highest Flood Level (HFL):</span>
+              <span id="drawer-hfl" class="font-medium text-red-400">-- m</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Explainable Rationale -->
+        <div class="bg-slate-900/60 p-3.5 rounded-xl border border-slate-800">
+          <p class="text-[11px] font-semibold text-slate-400 uppercase tracking-wider">Classification Rationale</p>
+          <p id="drawer-reason" class="text-xs text-slate-300 mt-1 leading-relaxed">
+            Click on a monitoring station in the Tamil Nadu map to view explainable CWC comparison details.
+          </p>
+        </div>
+
+        <!-- Decision Support Advisory -->
+        <div class="bg-blue-950/30 p-3.5 rounded-xl border border-blue-900/50">
+          <p class="text-[11px] font-semibold text-blue-400 uppercase tracking-wider flex items-center gap-1.5">
+            <span>🛡️</span> Decision Support Advisory
+          </p>
+          <p id="drawer-advisory" class="text-xs text-blue-200 mt-1.5 leading-relaxed font-medium">
+            Standard civil defense and flood mitigation protocols will appear here based on real-time classification.
+          </p>
+          <p class="text-[9px] text-slate-500 mt-2 italic">
+            * Advisory notice: Decision support only. Does not supersede official CWC / TNSDMA directives.
+          </p>
+        </div>
+
+        <!-- Telemetry History Chart Canvas -->
+        <div class="bg-slate-900/60 p-3 rounded-xl border border-slate-800 flex-1 flex flex-col justify-center">
+          <p class="text-[11px] font-semibold text-slate-400 mb-2">Recent Hourly Telemetry (Recent 24h)</p>
+          <div class="h-32">
+            <canvas id="stationChart"></canvas>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- Detailed Station Inventory Table -->
+    <section class="bg-slate-800/60 border border-slate-700 rounded-2xl p-5 space-y-4">
+      <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+        <div>
+          <h3 class="text-base font-bold text-white">Tamil Nadu Monitoring Stations Data Directory</h3>
+          <p class="text-xs text-slate-400">Real-time water levels, 1h predictions, and configured CWC thresholds</p>
+        </div>
+        <div class="w-full sm:w-64">
+          <input type="text" id="searchInput" onkeyup="searchTable()" placeholder="Search station or river..." 
+                 class="w-full bg-slate-900 border border-slate-700 rounded-lg px-3 py-1.5 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-blue-500" />
+        </div>
+      </div>
+
+      <!-- Responsive Table Container -->
+      <div class="overflow-x-auto">
+        <table class="w-full text-left text-xs border-collapse">
+          <thead>
+            <tr class="border-b border-slate-700 text-slate-400 bg-slate-900/50">
+              <th class="p-3 font-semibold">ID</th>
+              <th class="p-3 font-semibold">Station Name</th>
+              <th class="p-3 font-semibold">River / Basin</th>
+              <th class="p-3 font-semibold">Coordinates (Lat, Lon)</th>
+              <th class="p-3 font-semibold text-right">Latest Observed</th>
+              <th class="p-3 font-semibold text-right">Predicted (+1h)</th>
+              <th class="p-3 font-semibold text-right">Warning Level</th>
+              <th class="p-3 font-semibold text-right">Danger Level</th>
+              <th class="p-3 font-semibold text-center">Risk Level</th>
+              <th class="p-3 font-semibold text-center">Action</th>
+            </tr>
+          </thead>
+          <tbody id="stationsTableBody" class="divide-y divide-slate-800 text-slate-300">
+            <tr>
+              <td colspan="10" class="text-center py-6 text-slate-500">Loading Tamil Nadu telemetry stations...</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Footer -->
+  <footer class="border-t border-slate-800 bg-slate-900 px-6 py-4 text-center text-xs text-slate-500 mt-auto">
+    <p>AI-Based Flood Prediction &amp; Decision Support System for Tamil Nadu &bull; Final Year Engineering Project &bull; Fully CSV-Based Architecture</p>
+  </footer>
+
+  <!-- Frontend JavaScript Logic -->
+  <script>
+    let map;
+    let markersLayer;
+    let stationsData = [];
+    let currentFilter = 'ALL';
+    let chartInstance = null;
+
+    // Initialize Map
+    function initMap() {
+      // Centered on central Tamil Nadu
+      map = L.map('map', {
+        zoomControl: true,
+        scrollWheelZoom: true,
+      }).setView([11.1271, 78.6569], 7.5);
+
+      // Dark / Positron CartoDB Basemap
+      L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
+        attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/">CARTO</a>',
+        subdomains: 'abcd',
+        maxZoom: 19
+      }).addTo(map);
+
+      markersLayer = L.layerGroup().addTo(map);
+    }
+
+    // Color helpers based on risk classification
+    function getRiskColor(risk) {
+      switch (risk) {
+        case 'NORMAL': return '#10b981';   // Emerald Green
+        case 'WARNING': return '#f59e0b';  // Amber
+        case 'DANGER': return '#f97316';   // Orange
+        case 'CRITICAL': return '#ef4444'; // Red
+        default: return '#64748b';         // Slate Gray
+      }
+    }
+
+    function getRiskBadgeClass(risk) {
+      switch (risk) {
+        case 'NORMAL': return 'bg-emerald-500/20 text-emerald-400 border border-emerald-500/40';
+        case 'WARNING': return 'bg-amber-500/20 text-amber-400 border border-amber-500/40';
+        case 'DANGER': return 'bg-orange-500/20 text-orange-400 border border-orange-500/40';
+        case 'CRITICAL': return 'bg-red-500/20 text-red-400 border border-red-500/40 animate-pulse';
+        default: return 'bg-slate-700 text-slate-300';
+      }
+    }
+
+    // Fetch live summary from FastAPI
+    async function fetchData() {
+      const icon = document.getElementById('refresh-icon');
+      if (icon) icon.classList.add('animate-spin');
+
+      try {
+        const response = await fetch('/map-summary');
+        if (!response.ok) throw new Error('Network error fetching /map-summary');
+        stationsData = await response.json();
+        
+        updateKPIs(stationsData);
+        renderMarkers(stationsData);
+        renderTable(stationsData);
+
+        // Pre-select the first station (e.g. Akkihebbal or Bhavani)
+        if (stationsData.length > 0) {
+          selectStation(stationsData[0].station_id);
+        }
+      } catch (err) {
+        console.error('Failed to load stations data:', err);
+      } finally {
+        if (icon) icon.classList.remove('animate-spin');
+      }
+    }
+
+    function updateKPIs(data) {
+      document.getElementById('kpi-total').innerText = data.length;
+      const normalCount = data.filter(s => s.risk_level === 'NORMAL').length;
+      const warningCount = data.filter(s => s.risk_level === 'WARNING').length;
+      const dangerCount = data.filter(s => s.risk_level === 'DANGER' || s.risk_level === 'CRITICAL').length;
+
+      document.getElementById('kpi-normal').innerText = normalCount;
+      document.getElementById('kpi-warning').innerText = warningCount;
+      document.getElementById('kpi-danger').innerText = dangerCount;
+    }
+
+    function renderMarkers(data) {
+      markersLayer.clearLayers();
+
+      data.forEach(station => {
+        if (station.latitude && station.longitude) {
+          if (currentFilter !== 'ALL' && station.risk_level !== currentFilter) {
+            return;
+          }
+
+          const color = getRiskColor(station.risk_level);
+          const isAlert = ['WARNING', 'DANGER', 'CRITICAL'].includes(station.risk_level);
+
+          // Pulsing circle marker
+          const marker = L.circleMarker([station.latitude, station.longitude], {
+            radius: isAlert ? 9 : 7,
+            fillColor: color,
+            color: '#ffffff',
+            weight: 1.5,
+            opacity: 1,
+            fillOpacity: 0.85,
+          });
+
+          // Popup on hover / click
+          const popupHtml = `
+            <div class="text-xs p-1 font-sans">
+              <div class="font-bold text-white text-sm mb-1">${station.station_name}</div>
+              <div class="text-slate-400 mb-1">River: <span class="text-slate-200">${station.river}</span></div>
+              <div class="grid grid-cols-2 gap-2 my-2 bg-slate-900/90 p-2 rounded border border-slate-800">
+                <div>
+                  <span class="text-[10px] text-slate-400 block">Observed</span>
+                  <span class="font-bold text-white">${station.latest_observed_level_m} m</span>
+                </div>
+                <div>
+                  <span class="text-[10px] text-blue-400 block">Predicted (+1h)</span>
+                  <span class="font-bold text-blue-400">${station.predicted_water_level_m} m</span>
+                </div>
+              </div>
+              <div class="flex items-center justify-between mt-1">
+                <span class="px-2 py-0.5 rounded text-[10px] font-bold ${getRiskBadgeClass(station.risk_level)}">
+                  ${station.risk_level}
+                </span>
+                <span class="text-[10px] text-slate-400">WL: ${station.warning_level_m || 'N/A'} m</span>
+              </div>
+            </div>
+          `;
+
+          marker.bindPopup(popupHtml);
+          marker.on('click', () => selectStation(station.station_id));
+          markersLayer.addLayer(marker);
+        }
+      });
+    }
+
+    function selectStation(stationId) {
+      const station = stationsData.find(s => s.station_id === stationId);
+      if (!station) return;
+
+      // Update drawer elements
+      document.getElementById('drawer-title').innerText = station.station_name;
+      document.getElementById('drawer-basin').innerText = `${station.river} River &bull; ${station.basin}`;
+      document.getElementById('drawer-coords').innerText = `Lat: ${station.latitude.toFixed(4)}°, Lon: ${station.longitude.toFixed(4)}°`;
+      
+      const badge = document.getElementById('drawer-badge');
+      badge.innerText = station.risk_level;
+      badge.className = `px-2.5 py-1 rounded-full text-xs font-bold ${getRiskBadgeClass(station.risk_level)}`;
+
+      document.getElementById('drawer-observed').innerHTML = `${station.latest_observed_level_m} <span class="text-xs font-normal text-slate-400">m</span>`;
+      document.getElementById('drawer-obs-ts').innerText = `Observed: ${station.observation_timestamp}`;
+      document.getElementById('drawer-forecast').innerHTML = `${station.predicted_water_level_m} <span class="text-xs font-normal text-slate-400">m</span>`;
+      document.getElementById('drawer-roc').innerText = `Rate of change: ${station.rate_of_change_m_per_h > 0 ? '+' : ''}${station.rate_of_change_m_per_h} m/h`;
+
+      document.getElementById('drawer-wl').innerText = station.warning_level_m ? `${station.warning_level_m} m` : 'N/A';
+      document.getElementById('drawer-dl').innerText = station.danger_level_m ? `${station.danger_level_m} m` : 'N/A';
+      document.getElementById('drawer-hfl').innerText = station.hfl_m ? `${station.hfl_m} m` : 'N/A';
+      document.getElementById('drawer-thresh-status').innerText = station.threshold_status;
+
+      document.getElementById('drawer-reason').innerText = station.risk_reason;
+      document.getElementById('drawer-advisory').innerText = station.action_recommendation;
+
+      // Pan map smoothly to the station
+      if (station.latitude && station.longitude && map) {
+        map.flyTo([station.latitude, station.longitude], 9, { duration: 1.2 });
+      }
+
+      // Fetch recent 24h observations and render chart
+      loadStationObservations(station.station_id);
+    }
+
+    async function loadStationObservations(stationId) {
+      try {
+        const res = await fetch(`/observations/${stationId}?n=24`);
+        if (!res.ok) return;
+        const data = await res.json();
+        
+        const labels = data.observations.map(o => o.timestamp.split(' ')[1] || o.timestamp);
+        const values = data.observations.map(o => o.water_level);
+
+        renderChart(labels, values);
+      } catch (e) {
+        console.error('Error fetching observations for chart:', e);
+      }
+    }
+
+    function renderChart(labels, values) {
+      const ctx = document.getElementById('stationChart').getContext('2d');
+      if (chartInstance) {
+        chartInstance.destroy();
+      }
+
+      chartInstance = new Chart(ctx, {
+        type: 'line',
+        data: {
+          labels: labels,
+          datasets: [{
+            label: 'Water Level (m)',
+            data: values,
+            borderColor: '#38bdf8',
+            backgroundColor: 'rgba(56, 189, 248, 0.15)',
+            borderWidth: 2,
+            fill: true,
+            tension: 0.3,
+            pointRadius: 1.5,
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            legend: { display: false },
+            tooltip: {
+              backgroundColor: '#1e293b',
+              titleColor: '#94a3b8',
+              bodyColor: '#f8fafc',
+              borderColor: '#334155',
+              borderWidth: 1,
+            }
+          },
+          scales: {
+            x: {
+              grid: { color: '#1e293b' },
+              ticks: { color: '#64748b', font: { size: 9 }, maxTicksLimit: 6 }
+            },
+            y: {
+              grid: { color: '#1e293b' },
+              ticks: { color: '#64748b', font: { size: 9 } }
+            }
+          }
+        }
+      });
+    }
+
+    function renderTable(data) {
+      const tbody = document.getElementById('stationsTableBody');
+      tbody.innerHTML = '';
+
+      data.forEach(s => {
+        const tr = document.createElement('tr');
+        tr.className = 'hover:bg-slate-800/80 transition cursor-pointer';
+        tr.onclick = () => selectStation(s.station_id);
+
+        tr.innerHTML = `
+          <td class="p-3 text-slate-400 font-mono">${s.station_id}</td>
+          <td class="p-3 font-semibold text-white">${s.station_name}</td>
+          <td class="p-3 text-slate-400">${s.river}</td>
+          <td class="p-3 text-slate-400 font-mono text-[11px]">${s.latitude ? s.latitude.toFixed(4) : '--'}, ${s.longitude ? s.longitude.toFixed(4) : '--'}</td>
+          <td class="p-3 text-right font-medium text-white">${s.latest_observed_level_m} m</td>
+          <td class="p-3 text-right font-bold text-blue-400">${s.predicted_water_level_m} m</td>
+          <td class="p-3 text-right text-amber-400">${s.warning_level_m ? s.warning_level_m + ' m' : 'N/A'}</td>
+          <td class="p-3 text-right text-orange-400">${s.danger_level_m ? s.danger_level_m + ' m' : 'N/A'}</td>
+          <td class="p-3 text-center">
+            <span class="px-2 py-0.5 rounded text-[10px] font-bold ${getRiskBadgeClass(s.risk_level)}">
+              ${s.risk_level}
+            </span>
+          </td>
+          <td class="p-3 text-center">
+            <button onclick="event.stopPropagation(); selectStation(${s.station_id});" class="text-blue-400 hover:text-blue-300 font-medium text-xs">
+              View Map
+            </button>
+          </td>
+        `;
+        tbody.appendChild(tr);
+      });
+    }
+
+    function filterMap(riskFilter) {
+      currentFilter = riskFilter;
+      ['ALL', 'NORMAL', 'WARNING', 'DANGER', 'CRITICAL'].forEach(f => {
+        const btn = document.getElementById(`btn-filter-${f}`);
+        if (btn) {
+          if (f === riskFilter) {
+            btn.className = 'px-2.5 py-1 rounded font-medium bg-blue-600 text-white transition';
+          } else {
+            btn.className = 'px-2.5 py-1 rounded font-medium text-slate-400 hover:text-white transition';
+          }
+        }
+      });
+      renderMarkers(stationsData);
+    }
+
+    function searchTable() {
+      const input = document.getElementById('searchInput').value.toLowerCase();
+      const rows = document.getElementById('stationsTableBody').getElementsByTagName('tr');
+      for (let i = 0; i < rows.length; i++) {
+        const text = rows[i].textContent.toLowerCase();
+        rows[i].style.display = text.includes(input) ? '' : 'none';
+      }
+    }
+
+    function refreshData() {
+      fetchData();
+    }
+
+    // Startup on page load
+    window.addEventListener('DOMContentLoaded', () => {
+      initMap();
+      fetchData();
+    });
+  </script>
+</body>
+</html>

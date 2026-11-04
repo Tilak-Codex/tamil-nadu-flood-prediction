@@ -1,0 +1,36 @@
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# C extensions
+*.so
+
+# Distribution / packaging
+.Python
+env/
+venv/
+.venv/
+ENV/
+
+# Pytest
+.pytest_cache/
+
+# Node / Frontend
+frontend/node_modules/
+frontend/.vite/
+
+# Environment variables
+.env
+
+# Large raw dataset (210MB - exceeds GitHub 100MB limit; use Git LFS if needed)
+data/processed/cleaned_dataset.csv
+
+# Large raw archive or temporary files
+data/raw_extracted/
+*.tar.gz
+*.zip
+
+# OS artifacts
+.DS_Store
+Thumbs.db

@@ -1,0 +1,875 @@
+{
+  "Persistence_Naive": {
+    "overall": {
+      "mae": 5.7474,
+      "rmse": 39.8904,
+      "r2": 0.9863,
+      "nse": 0.9863,
+      "samples": 128991
+    },
+    "station_wise": {
+      "0": {
+        "station_name": "AKKIHEBBAL",
+        "mae": 8.5568,
+        "rmse": 54.3091,
+        "r2": 0.9123,
+        "nse": 0.9123,
+        "samples": 5017
+      },
+      "1": {
+        "station_name": "BHAVANI BRIDGE",
+        "mae": 0.1131,
+        "rmse": 2.5638,
+        "r2": 0.8327,
+        "nse": 0.8327,
+        "samples": 4774
+      },
+      "2": {
+        "station_name": "Bhavani Sagar Dam",
+        "mae": 15.0683,
+        "rmse": 73.6276,
+        "r2": 0.9457,
+        "nse": 0.9457,
+        "samples": 2367
+      },
+      "3": {
+        "station_name": "BILIGUNDULU",
+        "mae": 22.0179,
+        "rmse": 89.6039,
+        "r2": 0.8185,
+        "nse": 0.8185,
+        "samples": 3380
+      },
+      "4": {
+        "station_name": "Harangi Reservoir",
+        "mae": 5.4032,
+        "rmse": 46.9409,
+        "r2": 0.9189,
+        "nse": 0.9189,
+        "samples": 4575
+      },
+      "5": {
+        "station_name": "Hemavathy Reservoir",
+        "mae": 21.3212,
+        "rmse": 67.3169,
+        "r2": 0.9558,
+        "nse": 0.9558,
+        "samples": 2796
+      },
+      "6": {
+        "station_name": "Kabini Reservoir",
+        "mae": 5.3646,
+        "rmse": 37.502,
+        "r2": 0.9374,
+        "nse": 0.9374,
+        "samples": 4437
+      },
+      "7": {
+        "station_name": "K.M. VADI",
+        "mae": 15.8409,
+        "rmse": 70.0763,
+        "r2": 0.8817,
+        "nse": 0.8817,
+        "samples": 4593
+      },
+      "8": {
+        "station_name": "KODAGANAR DAM",
+        "mae": 7.5343,
+        "rmse": 36.6972,
+        "r2": 0.8604,
+        "nse": 0.8604,
+        "samples": 4312
+      },
+      "9": {
+        "station_name": "KODUMUDI",
+        "mae": 0.0934,
+        "rmse": 0.7934,
+        "r2": -0.4445,
+        "nse": -0.4445,
+        "samples": 3355
+      },
+      "10": {
+        "station_name": "KOLLEGAL",
+        "mae": 0.4635,
+        "rmse": 6.2675,
+        "r2": -0.5877,
+        "nse": -0.5877,
+        "samples": 4969
+      },
+      "11": {
+        "station_name": "Krishnarajasagar Reservoir",
+        "mae": 0.1434,
+        "rmse": 2.8237,
+        "r2": 0.8654,
+        "nse": 0.8654,
+        "samples": 4884
+      },
+      "12": {
+        "station_name": "KUDIGE",
+        "mae": 3.9293,
+        "rmse": 45.0983,
+        "r2": 0.9331,
+        "nse": 0.9331,
+        "samples": 4908
+      },
+      "13": {
+        "station_name": "KUDLUR",
+        "mae": 0.3896,
+        "rmse": 4.7399,
+        "r2": 0.5742,
+        "nse": 0.5742,
+        "samples": 4749
+      },
+      "14": {
+        "station_name": "Mettur Reservoir",
+        "mae": 7.4792,
+        "rmse": 42.0071,
+        "r2": 0.8573,
+        "nse": 0.8573,
+        "samples": 5102
+      },
+      "15": {
+        "station_name": "M.H. HALLI",
+        "mae": 16.9612,
+        "rmse": 58.5783,
+        "r2": 0.8587,
+        "nse": 0.8587,
+        "samples": 3704
+      },
+      "16": {
+        "station_name": "MUSIRI",
+        "mae": 0.1299,
+        "rmse": 2.4704,
+        "r2": -0.0822,
+        "nse": -0.0822,
+        "samples": 4841
+      },
+      "17": {
+        "station_name": "MUTHANKERA",
+        "mae": 10.3197,
+        "rmse": 63.0703,
+        "r2": 0.9639,
+        "nse": 0.9639,
+        "samples": 2586
+      },
+      "18": {
+        "station_name": "NALLAMARANPATTY",
+        "mae": 0.0819,
+        "rmse": 2.755,
+        "r2": -0.9394,
+        "nse": -0.9394,
+        "samples": 4819
+      },
+      "19": {
+        "station_name": "NELLITHURAI",
+        "mae": 12.1449,
+        "rmse": 55.4143,
+        "r2": 0.9219,
+        "nse": 0.9219,
+        "samples": 4202
+      },
+      "20": {
+        "station_name": "PALLIPALAYAM/Erode",
+        "mae": 0.4319,
+        "rmse": 18.174,
+        "r2": -0.0006,
+        "nse": -0.0006,
+        "samples": 2125
+      },
+      "21": {
+        "station_name": "SAKLESHPUR",
+        "mae": 0.0003,
+        "rmse": 0.0006,
+        "r2": 0.8762,
+        "nse": 0.8762,
+        "samples": 1054
+      },
+      "22": {
+        "station_name": "SANARPATTI",
+        "mae": 0.649,
+        "rmse": 10.1329,
+        "r2": 0.6552,
+        "nse": 0.6552,
+        "samples": 4172
+      },
+      "23": {
+        "station_name": "SRI RANGAM",
+        "mae": 2.0679,
+        "rmse": 13.8788,
+        "r2": 0.8365,
+        "nse": 0.8365,
+        "samples": 4947
+      },
+      "24": {
+        "station_name": "T. BEKKUPE",
+        "mae": 9.9708,
+        "rmse": 54.3481,
+        "r2": 0.77,
+        "nse": 0.77,
+        "samples": 4719
+      },
+      "25": {
+        "station_name": "THENGUMARAHADA",
+        "mae": 2.8539,
+        "rmse": 27.1556,
+        "r2": 0.9404,
+        "nse": 0.9404,
+        "samples": 5201
+      },
+      "26": {
+        "station_name": "THIMMANAHALLI",
+        "mae": 5.5414,
+        "rmse": 20.723,
+        "r2": 0.0691,
+        "nse": 0.0691,
+        "samples": 5030
+      },
+      "27": {
+        "station_name": "T.K.HALLI",
+        "mae": 5.3176,
+        "rmse": 51.5432,
+        "r2": 0.9561,
+        "nse": 0.9561,
+        "samples": 3682
+      },
+      "28": {
+        "station_name": "UPPER ANICUT",
+        "mae": 8.8681,
+        "rmse": 33.5148,
+        "r2": 0.8763,
+        "nse": 0.8763,
+        "samples": 5004
+      },
+      "29": {
+        "station_name": "URACHIKOTTAI",
+        "mae": 0.5443,
+        "rmse": 9.9249,
+        "r2": 0.0729,
+        "nse": 0.0729,
+        "samples": 3358
+      },
+      "30": {
+        "station_name": "VADAMADURAI",
+        "mae": 0.1781,
+        "rmse": 3.7144,
+        "r2": -0.7854,
+        "nse": -0.7854,
+        "samples": 4298
+      },
+      "31": {
+        "station_name": "Kamuthi Bridge",
+        "mae": 1.1214,
+        "rmse": 4.4059,
+        "r2": 0.7114,
+        "nse": 0.7114,
+        "samples": 34
+      },
+      "32": {
+        "station_name": "Nandambakkam CheckDam",
+        "mae": 0.0004,
+        "rmse": 0.0006,
+        "r2": 1.0,
+        "nse": 1.0,
+        "samples": 396
+      },
+      "33": {
+        "station_name": "Parthibanur Regulator",
+        "mae": 0.3354,
+        "rmse": 1.3877,
+        "r2": 0.7132,
+        "nse": 0.7132,
+        "samples": 107
+      },
+      "34": {
+        "station_name": "Virudhachalam Anicut",
+        "mae": 0.0003,
+        "rmse": 0.0022,
+        "r2": 0.7663,
+        "nse": 0.7663,
+        "samples": 494
+      }
+    }
+  },
+  "Moving_Average_24h": {
+    "overall": {
+      "mae": 22.6462,
+      "rmse": 87.7126,
+      "r2": 0.9337,
+      "nse": 0.9337,
+      "samples": 128991
+    },
+    "station_wise": {
+      "0": {
+        "station_name": "AKKIHEBBAL",
+        "mae": 44.2891,
+        "rmse": 139.1375,
+        "r2": 0.4243,
+        "nse": 0.4243,
+        "samples": 5017
+      },
+      "1": {
+        "station_name": "BHAVANI BRIDGE",
+        "mae": 0.51,
+        "rmse": 6.1074,
+        "r2": 0.0505,
+        "nse": 0.0505,
+        "samples": 4774
+      },
+      "2": {
+        "station_name": "Bhavani Sagar Dam",
+        "mae": 78.3378,
+        "rmse": 176.7231,
+        "r2": 0.6873,
+        "nse": 0.6873,
+        "samples": 2367
+      },
+      "3": {
+        "station_name": "BILIGUNDULU",
+        "mae": 80.0766,
+        "rmse": 179.953,
+        "r2": 0.2679,
+        "nse": 0.2679,
+        "samples": 3380
+      },
+      "4": {
+        "station_name": "Harangi Reservoir",
+        "mae": 34.2258,
+        "rmse": 126.2036,
+        "r2": 0.414,
+        "nse": 0.414,
+        "samples": 4575
+      },
+      "5": {
+        "station_name": "Hemavathy Reservoir",
+        "mae": 87.0646,
+        "rmse": 170.2248,
+        "r2": 0.7171,
+        "nse": 0.7171,
+        "samples": 2796
+      },
+      "6": {
+        "station_name": "Kabini Reservoir",
+        "mae": 29.044,
+        "rmse": 97.295,
+        "r2": 0.5787,
+        "nse": 0.5787,
+        "samples": 4437
+      },
+      "7": {
+        "station_name": "K.M. VADI",
+        "mae": 46.8772,
+        "rmse": 131.99,
+        "r2": 0.5805,
+        "nse": 0.5805,
+        "samples": 4593
+      },
+      "8": {
+        "station_name": "KODAGANAR DAM",
+        "mae": 27.6459,
+        "rmse": 72.7011,
+        "r2": 0.4522,
+        "nse": 0.4522,
+        "samples": 4312
+      },
+      "9": {
+        "station_name": "KODUMUDI",
+        "mae": 0.1153,
+        "rmse": 0.6632,
+        "r2": -0.0093,
+        "nse": -0.0093,
+        "samples": 3355
+      },
+      "10": {
+        "station_name": "KOLLEGAL",
+        "mae": 0.5662,
+        "rmse": 5.0649,
+        "r2": -0.0368,
+        "nse": -0.0368,
+        "samples": 4969
+      },
+      "11": {
+        "station_name": "Krishnarajasagar Reservoir",
+        "mae": 0.4676,
+        "rmse": 4.8157,
+        "r2": 0.6084,
+        "nse": 0.6084,
+        "samples": 4884
+      },
+      "12": {
+        "station_name": "KUDIGE",
+        "mae": 33.963,
+        "rmse": 124.7305,
+        "r2": 0.4882,
+        "nse": 0.4882,
+        "samples": 4908
+      },
+      "13": {
+        "station_name": "KUDLUR",
+        "mae": 1.0685,
+        "rmse": 6.828,
+        "r2": 0.1165,
+        "nse": 0.1165,
+        "samples": 4749
+      },
+      "14": {
+        "station_name": "Mettur Reservoir",
+        "mae": 26.715,
+        "rmse": 83.2175,
+        "r2": 0.4398,
+        "nse": 0.4398,
+        "samples": 5102
+      },
+      "15": {
+        "station_name": "M.H. HALLI",
+        "mae": 79.5656,
+        "rmse": 126.0479,
+        "r2": 0.3457,
+        "nse": 0.3457,
+        "samples": 3704
+      },
+      "16": {
+        "station_name": "MUSIRI",
+        "mae": 0.2422,
+        "rmse": 2.4154,
+        "r2": -0.0345,
+        "nse": -0.0345,
+        "samples": 4841
+      },
+      "17": {
+        "station_name": "MUTHANKERA",
+        "mae": 50.6678,
+        "rmse": 134.6407,
+        "r2": 0.8354,
+        "nse": 0.8354,
+        "samples": 2586
+      },
+      "18": {
+        "station_name": "NALLAMARANPATTY",
+        "mae": 0.1024,
+        "rmse": 2.0182,
+        "r2": -0.0407,
+        "nse": -0.0407,
+        "samples": 4819
+      },
+      "19": {
+        "station_name": "NELLITHURAI",
+        "mae": 39.0329,
+        "rmse": 115.9545,
+        "r2": 0.6579,
+        "nse": 0.6579,
+        "samples": 4202
+      },
+      "20": {
+        "station_name": "PALLIPALAYAM/Erode",
+        "mae": 0.4504,
+        "rmse": 18.1747,
+        "r2": -0.0007,
+        "nse": -0.0007,
+        "samples": 2125
+      },
+      "21": {
+        "station_name": "SAKLESHPUR",
+        "mae": 0.0011,
+        "rmse": 0.0015,
+        "r2": 0.3044,
+        "nse": 0.3044,
+        "samples": 1054
+      },
+      "22": {
+        "station_name": "SANARPATTI",
+        "mae": 2.0953,
+        "rmse": 16.0664,
+        "r2": 0.1332,
+        "nse": 0.1332,
+        "samples": 4172
+      },
+      "23": {
+        "station_name": "SRI RANGAM",
+        "mae": 4.9978,
+        "rmse": 19.993,
+        "r2": 0.6608,
+        "nse": 0.6608,
+        "samples": 4947
+      },
+      "24": {
+        "station_name": "T. BEKKUPE",
+        "mae": 26.7223,
+        "rmse": 95.9837,
+        "r2": 0.2827,
+        "nse": 0.2827,
+        "samples": 4719
+      },
+      "25": {
+        "station_name": "THENGUMARAHADA",
+        "mae": 12.29,
+        "rmse": 59.3987,
+        "r2": 0.715,
+        "nse": 0.715,
+        "samples": 5201
+      },
+      "26": {
+        "station_name": "THIMMANAHALLI",
+        "mae": 6.1809,
+        "rmse": 17.5575,
+        "r2": 0.3318,
+        "nse": 0.3318,
+        "samples": 5030
+      },
+      "27": {
+        "station_name": "T.K.HALLI",
+        "mae": 35.1663,
+        "rmse": 127.3973,
+        "r2": 0.7318,
+        "nse": 0.7318,
+        "samples": 3682
+      },
+      "28": {
+        "station_name": "UPPER ANICUT",
+        "mae": 16.4433,
+        "rmse": 47.4877,
+        "r2": 0.7516,
+        "nse": 0.7516,
+        "samples": 5004
+      },
+      "29": {
+        "station_name": "URACHIKOTTAI",
+        "mae": 0.9989,
+        "rmse": 10.4967,
+        "r2": -0.037,
+        "nse": -0.037,
+        "samples": 3358
+      },
+      "30": {
+        "station_name": "VADAMADURAI",
+        "mae": 0.2058,
+        "rmse": 2.8383,
+        "r2": -0.0424,
+        "nse": -0.0424,
+        "samples": 4298
+      },
+      "31": {
+        "station_name": "Kamuthi Bridge",
+        "mae": 11.0597,
+        "rmse": 14.4971,
+        "r2": -2.1247,
+        "nse": -2.1247,
+        "samples": 34
+      },
+      "32": {
+        "station_name": "Nandambakkam CheckDam",
+        "mae": 0.0004,
+        "rmse": 0.0005,
+        "r2": 1.0,
+        "nse": 1.0,
+        "samples": 396
+      },
+      "33": {
+        "station_name": "Parthibanur Regulator",
+        "mae": 1.3706,
+        "rmse": 2.6897,
+        "r2": -0.0776,
+        "nse": -0.0776,
+        "samples": 107
+      },
+      "34": {
+        "station_name": "Virudhachalam Anicut",
+        "mae": 0.0011,
+        "rmse": 0.0045,
+        "r2": 0.0145,
+        "nse": 0.0145,
+        "samples": 494
+      }
+    }
+  },
+  "Ridge_Regression": {
+    "overall": {
+      "mae": 8.5273,
+      "rmse": 39.1971,
+      "r2": 0.9868,
+      "nse": 0.9868,
+      "samples": 128991
+    },
+    "station_wise": {
+      "0": {
+        "station_name": "AKKIHEBBAL",
+        "mae": 12.7821,
+        "rmse": 53.1162,
+        "r2": 0.9161,
+        "nse": 0.9161,
+        "samples": 5017
+      },
+      "1": {
+        "station_name": "BHAVANI BRIDGE",
+        "mae": 0.521,
+        "rmse": 2.6018,
+        "r2": 0.8277,
+        "nse": 0.8277,
+        "samples": 4774
+      },
+      "2": {
+        "station_name": "Bhavani Sagar Dam",
+        "mae": 22.2188,
+        "rmse": 73.9654,
+        "r2": 0.9452,
+        "nse": 0.9452,
+        "samples": 2367
+      },
+      "3": {
+        "station_name": "BILIGUNDULU",
+        "mae": 26.5746,
+        "rmse": 85.2649,
+        "r2": 0.8356,
+        "nse": 0.8356,
+        "samples": 3380
+      },
+      "4": {
+        "station_name": "Harangi Reservoir",
+        "mae": 11.3543,
+        "rmse": 47.1838,
+        "r2": 0.9181,
+        "nse": 0.9181,
+        "samples": 4575
+      },
+      "5": {
+        "station_name": "Hemavathy Reservoir",
+        "mae": 27.5895,
+        "rmse": 67.6141,
+        "r2": 0.9554,
+        "nse": 0.9554,
+        "samples": 2796
+      },
+      "6": {
+        "station_name": "Kabini Reservoir",
+        "mae": 8.7568,
+        "rmse": 37.866,
+        "r2": 0.9362,
+        "nse": 0.9362,
+        "samples": 4437
+      },
+      "7": {
+        "station_name": "K.M. VADI",
+        "mae": 19.3617,
+        "rmse": 68.5906,
+        "r2": 0.8867,
+        "nse": 0.8867,
+        "samples": 4593
+      },
+      "8": {
+        "station_name": "KODAGANAR DAM",
+        "mae": 10.743,
+        "rmse": 36.2514,
+        "r2": 0.8638,
+        "nse": 0.8638,
+        "samples": 4312
+      },
+      "9": {
+        "station_name": "KODUMUDI",
+        "mae": 1.3559,
+        "rmse": 1.78,
+        "r2": -6.2706,
+        "nse": -6.2706,
+        "samples": 3355
+      },
+      "10": {
+        "station_name": "KOLLEGAL",
+        "mae": 1.9481,
+        "rmse": 6.5516,
+        "r2": -0.7349,
+        "nse": -0.7349,
+        "samples": 4969
+      },
+      "11": {
+        "station_name": "Krishnarajasagar Reservoir",
+        "mae": 3.6532,
+        "rmse": 4.625,
+        "r2": 0.6388,
+        "nse": 0.6388,
+        "samples": 4884
+      },
+      "12": {
+        "station_name": "KUDIGE",
+        "mae": 8.7679,
+        "rmse": 46.2733,
+        "r2": 0.9296,
+        "nse": 0.9296,
+        "samples": 4908
+      },
+      "13": {
+        "station_name": "KUDLUR",
+        "mae": 1.3789,
+        "rmse": 5.0595,
+        "r2": 0.5149,
+        "nse": 0.5149,
+        "samples": 4749
+      },
+      "14": {
+        "station_name": "Mettur Reservoir",
+        "mae": 10.3093,
+        "rmse": 39.9926,
+        "r2": 0.8706,
+        "nse": 0.8706,
+        "samples": 5102
+      },
+      "15": {
+        "station_name": "M.H. HALLI",
+        "mae": 23.8195,
+        "rmse": 55.6494,
+        "r2": 0.8725,
+        "nse": 0.8725,
+        "samples": 3704
+      },
+      "16": {
+        "station_name": "MUSIRI",
+        "mae": 1.6568,
+        "rmse": 3.0835,
+        "r2": -0.686,
+        "nse": -0.686,
+        "samples": 4841
+      },
+      "17": {
+        "station_name": "MUTHANKERA",
+        "mae": 15.4804,
+        "rmse": 60.4052,
+        "r2": 0.9669,
+        "nse": 0.9669,
+        "samples": 2586
+      },
+      "18": {
+        "station_name": "NALLAMARANPATTY",
+        "mae": 0.397,
+        "rmse": 2.8196,
+        "r2": -1.0314,
+        "nse": -1.0314,
+        "samples": 4819
+      },
+      "19": {
+        "station_name": "NELLITHURAI",
+        "mae": 14.1889,
+        "rmse": 54.5957,
+        "r2": 0.9242,
+        "nse": 0.9242,
+        "samples": 4202
+      },
+      "20": {
+        "station_name": "PALLIPALAYAM/Erode",
+        "mae": 2.2185,
+        "rmse": 18.2373,
+        "r2": -0.0076,
+        "nse": -0.0076,
+        "samples": 2125
+      },
+      "21": {
+        "station_name": "SAKLESHPUR",
+        "mae": 2.8633,
+        "rmse": 3.0653,
+        "r2": -3082594.4956,
+        "nse": -3082594.4956,
+        "samples": 1054
+      },
+      "22": {
+        "station_name": "SANARPATTI",
+        "mae": 1.6833,
+        "rmse": 10.0335,
+        "r2": 0.662,
+        "nse": 0.662,
+        "samples": 4172
+      },
+      "23": {
+        "station_name": "SRI RANGAM",
+        "mae": 4.022,
+        "rmse": 14.1048,
+        "r2": 0.8312,
+        "nse": 0.8312,
+        "samples": 4947
+      },
+      "24": {
+        "station_name": "T. BEKKUPE",
+        "mae": 12.1452,
+        "rmse": 52.4606,
+        "r2": 0.7857,
+        "nse": 0.7857,
+        "samples": 4719
+      },
+      "25": {
+        "station_name": "THENGUMARAHADA",
+        "mae": 4.4932,
+        "rmse": 26.1547,
+        "r2": 0.9447,
+        "nse": 0.9447,
+        "samples": 5201
+      },
+      "26": {
+        "station_name": "THIMMANAHALLI",
+        "mae": 7.7253,
+        "rmse": 21.7318,
+        "r2": -0.0238,
+        "nse": -0.0238,
+        "samples": 5030
+      },
+      "27": {
+        "station_name": "T.K.HALLI",
+        "mae": 9.861,
+        "rmse": 52.2747,
+        "r2": 0.9549,
+        "nse": 0.9549,
+        "samples": 3682
+      },
+      "28": {
+        "station_name": "UPPER ANICUT",
+        "mae": 11.1926,
+        "rmse": 33.8291,
+        "r2": 0.8739,
+        "nse": 0.8739,
+        "samples": 5004
+      },
+      "29": {
+        "station_name": "URACHIKOTTAI",
+        "mae": 2.135,
+        "rmse": 10.1035,
+        "r2": 0.0392,
+        "nse": 0.0392,
+        "samples": 3358
+      },
+      "30": {
+        "station_name": "VADAMADURAI",
+        "mae": 0.4234,
+        "rmse": 3.767,
+        "r2": -0.8363,
+        "nse": -0.8363,
+        "samples": 4298
+      },
+      "31": {
+        "station_name": "Kamuthi Bridge",
+        "mae": 2.2692,
+        "rmse": 4.6866,
+        "r2": 0.6734,
+        "nse": 0.6734,
+        "samples": 34
+      },
+      "32": {
+        "station_name": "Nandambakkam CheckDam",
+        "mae": 0.0634,
+        "rmse": 0.065,
+        "r2": 0.998,
+        "nse": 0.998,
+        "samples": 396
+      },
+      "33": {
+        "station_name": "Parthibanur Regulator",
+        "mae": 0.5524,
+        "rmse": 1.4038,
+        "r2": 0.7065,
+        "nse": 0.7065,
+        "samples": 107
+      },
+      "34": {
+        "station_name": "Virudhachalam Anicut",
+        "mae": 0.0006,
+        "rmse": 0.0021,
+        "r2": 0.7898,
+        "nse": 0.7898,
+        "samples": 494
+      }
+    }
+  }
+}
