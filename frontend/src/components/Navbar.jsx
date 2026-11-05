@@ -2,13 +2,8 @@ import React from 'react';
 import {
   LayoutDashboard,
   MapPin,
-  Building2,
-  LineChart,
-  BrainCircuit,
   ShieldAlert,
   Bell,
-  Cpu,
-  Database,
   Waves
 } from 'lucide-react';
 
@@ -17,13 +12,8 @@ export default function Navbar({ activeTab, onTabChange, alertCount = 0 }) {
   const navItems = [
     { id: 'overview', label: 'Overview', icon: LayoutDashboard },
     { id: 'map', label: 'Station Map', icon: MapPin },
-    { id: 'station-details', label: 'Station Details', icon: Building2 },
-    { id: 'hydrograph', label: 'Hydrographs', icon: LineChart },
-    { id: 'predictions', label: 'Next-Hour Forecast', icon: BrainCircuit },
     { id: 'risk', label: 'Flood Risk Status', icon: ShieldAlert },
     { id: 'alerts', label: 'Alerts', icon: Bell, badge: alertCount },
-    { id: 'model-eval', label: 'Model Evaluation', icon: Cpu },
-    { id: 'data-sources', label: 'Data Sources', icon: Database },
   ];
 
   return (

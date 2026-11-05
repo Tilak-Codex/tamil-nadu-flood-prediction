@@ -2,13 +2,8 @@ import { useState, useEffect, useCallback } from 'react';
 import Navbar from './components/Navbar';
 import Overview from './components/Overview';
 import StationMap from './components/StationMap';
-import StationDetails from './components/StationDetails';
-import HydrographCharts from './components/HydrographCharts';
-import PredictionResults from './components/PredictionResults';
 import FloodRiskStatus from './components/FloodRiskStatus';
 import AlertsPanel from './components/AlertsPanel';
-import ModelEvaluation from './components/ModelEvaluation';
-import DataSourcesPanel from './components/DataSourcesPanel';
 import { fetchStations, fetchAlerts, fetchDashboardStats, fetchMapSummary } from './api';
 
 export default function App() {
@@ -51,7 +46,7 @@ export default function App() {
 
   const handleSelectStation = (stationId) => {
     setSelectedStationId(stationId);
-    setActiveTab('station-details');
+    setActiveTab('map');
   };
 
   const handleNavigateTab = (tab) => setActiveTab(tab);
@@ -109,27 +104,10 @@ export default function App() {
             onSelectStation={handleSelectStation}
           />
         );
-      case 'station-details':
-        return (
-          <StationDetails
-            selectedStationId={selectedStationId}
-            stations={stations}
-            onSelectStation={handleSelectStation}
-            onNavigateTab={handleNavigateTab}
-          />
-        );
-      case 'hydrograph':
-        return <HydrographCharts stations={stations} initialStationId={selectedStationId} />;
-      case 'predictions':
-        return <PredictionResults stations={stations} initialStationId={selectedStationId} />;
       case 'risk':
         return <FloodRiskStatus stations={stations} onSelectStation={handleSelectStation} />;
       case 'alerts':
         return <AlertsPanel />;
-      case 'model-eval':
-        return <ModelEvaluation />;
-      case 'data-sources':
-        return <DataSourcesPanel />;
       default:
         return null;
     }
