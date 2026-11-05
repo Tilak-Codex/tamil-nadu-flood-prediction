@@ -1,6 +1,5 @@
-import { useState, useEffect } from 'react';
 import { AlertTriangle, CheckCircle, Minus, Info } from 'lucide-react';
-import { fetchRiskSummary } from '../api';
+import { getRiskCategory } from './riskCategories';
 
 const RISK_CONFIG = {
   Normal: { color: 'bg-green-100 border-green-300 text-green-800', icon: CheckCircle, iconColor: 'text-green-600', badge: 'bg-green-500' },
@@ -10,35 +9,22 @@ const RISK_CONFIG = {
   'Threshold Unavailable': { color: 'bg-gray-100 border-gray-300 text-gray-600', icon: Minus, iconColor: 'text-gray-400', badge: 'bg-gray-400' },
 };
 
-export default function FloodRiskStatus({ stations = [], onSelectStation }) {
-  const [riskData, setRiskData] = useState(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
-
-  useEffect(() => {
-    setLoading(true);
-    fetchRiskSummary()
-      .then(setRiskData)
-      .catch((e) => setError(e.message))
-      .finally(() => setLoading(false));
-  }, []);
-
-  if (loading) {
-    return (
-      <div className="flex justify-center py-24">
-        <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-blue-600" />
-      </div>
-    );
-  }
-
-  if (error) {
-    return (
-      <div className="bg-red-50 border border-red-200 rounded-lg p-4 text-red-700 text-sm">{error}</div>
-    );
-  }
-
+export default function FloodRiskStatus({ stations = [], mapSummary = [], onSelectStation }) {
   const categories = Object.keys(RISK_CONFIG);
-  const stationRisks = riskData?.station_risks ?? [];
+  const stationRisks = stations.map((station) => {
+    const summary = mapSummary.find((item) => item.station_id === station.station_id) ?? {};
+    return {
+      ...station,
+      ...summary,
+      station_name: summary.station_name ?? station.station_name,
+      river_name: summary.river ?? station.river,
+      current_level: summary.latest_observed_level_m,
+      predicted_level: summary.predicted_water_level_m,
+      warning_level: summary.warning_level_m ?? station.warning_level,
+      danger_level: summary.danger_level_m ?? station.danger_level,
+      risk_category: getRiskCategory(summary),
+    };
+  });
 
   // Tally each category
   const tally = {};
@@ -54,8 +40,7 @@ export default function FloodRiskStatus({ stations = [], onSelectStation }) {
       <div className="bg-white rounded-xl border border-gray-200 p-4">
         <h2 className="text-lg font-bold text-gray-800">Flood Risk Status</h2>
         <p className="text-xs text-amber-600 mt-0.5">
-          ⚠ Risk classifications use CWC-verified thresholds where available.
-          "Threshold Unavailable" is returned when official thresholds are not on record.
+          Risk categories use each station's forecast and the same classification shown on the Station Map.
         </p>
       </div>
 
@@ -98,18 +83,18 @@ export default function FloodRiskStatus({ stations = [], onSelectStation }) {
               <tr>
                 <th className="px-4 py-3 text-left">Station</th>
                 <th className="px-4 py-3 text-left">River / Basin</th>
-                <th className="px-4 py-3 text-right">Water Level (m)</th>
+                <th className="px-4 py-3 text-right">Observed (m)</th>
+                <th className="px-4 py-3 text-right">Forecast (+1h) (m)</th>
                 <th className="px-4 py-3 text-right">Warning (m)</th>
                 <th className="px-4 py-3 text-right">Danger (m)</th>
                 <th className="px-4 py-3 text-center">Risk Category</th>
-                <th className="px-4 py-3 text-center">Threshold Source</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-gray-100">
               {stationRisks.length === 0 && (
                 <tr>
                   <td colSpan={7} className="text-center py-8 text-gray-400 text-sm">
-                    No risk data available. Run predictions first.
+                    No station data available.
                   </td>
                 </tr>
               )}
@@ -129,6 +114,9 @@ export default function FloodRiskStatus({ stations = [], onSelectStation }) {
                     <td className="px-4 py-3 text-right">
                       {sr.current_level != null ? sr.current_level.toFixed(2) : '—'}
                     </td>
+                    <td className="px-4 py-3 text-right">
+                      {sr.predicted_level != null ? sr.predicted_level.toFixed(2) : '—'}
+                    </td>
                     <td className="px-4 py-3 text-right text-amber-600">
                       {sr.warning_level != null ? sr.warning_level.toFixed(2) : '—'}
                     </td>
@@ -140,25 +128,12 @@ export default function FloodRiskStatus({ stations = [], onSelectStation }) {
                         {cat}
                       </span>
                     </td>
-                    <td className="px-4 py-3 text-center">
-                      {sr.threshold_source === 'VERIFIED_CWC' || sr.threshold_source === 'CWC_HYDROLOGICAL_NETWORK' ? (
-                        <span className="text-emerald-600 text-xs font-semibold">✅ CWC Verified</span>
-                      ) : (
-                        <span className="text-blue-600 text-xs font-medium">CWC Gauge Reference</span>
-                      )}
-                    </td>
                   </tr>
                 );
               })}
             </tbody>
           </table>
         </div>
-      </div>
-
-      {/* Disclaimer footer */}
-      <div className="text-xs text-gray-400 text-center">
-        Risk classifications are for research / educational purposes only.
-        Do not use for emergency response without official CWC / IMD bulletins.
       </div>
     </div>
   );

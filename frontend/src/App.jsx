@@ -105,7 +105,13 @@ export default function App() {
           />
         );
       case 'risk':
-        return <FloodRiskStatus stations={stations} onSelectStation={handleSelectStation} />;
+        return (
+          <FloodRiskStatus
+            stations={stations}
+            mapSummary={mapSummary}
+            onSelectStation={handleSelectStation}
+          />
+        );
       case 'alerts':
         return <AlertsPanel />;
       default:
@@ -123,11 +129,6 @@ export default function App() {
       <main className="max-w-screen-xl mx-auto px-4 py-6">
         {renderContent()}
       </main>
-      <footer className="text-center text-xs text-gray-400 py-4 border-t border-gray-200 mt-8">
-        AI-Based Flood Prediction &amp; Decision Support System — Tamil Nadu &nbsp;|&nbsp;
-        Data: CWC Historical Records &nbsp;|&nbsp;
-        <span className="text-amber-500">All data is HISTORICAL / SIMULATED — Not live telemetry</span>
-      </footer>
     </div>
   );
 }

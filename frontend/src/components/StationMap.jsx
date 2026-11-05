@@ -1,6 +1,7 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { MapContainer, TileLayer, CircleMarker, Popup, Tooltip } from 'react-leaflet';
-import { ShieldAlert, ArrowRight, Filter, Search, Waves } from 'lucide-react';
+import { Filter, Search } from 'lucide-react';
+import { getRiskCategory } from './riskCategories';
 
 export default function StationMap({
   stations = [],
@@ -19,7 +20,7 @@ export default function StationMap({
       ...summary,
       latitude: summary.latitude || stn.latitude,
       longitude: summary.longitude || stn.longitude,
-      severity: summary.severity || summary.risk_level || 'Threshold Unavailable',
+      severity: getRiskCategory(summary),
       severity_color: summary.severity_color || '#64748b',
       latest_observed_level_m: summary.latest_observed_level_m,
       predicted_water_level_m: summary.predicted_water_level_m,
